@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Connexion TikTok — VERDICT.</title>
+<link rel="icon" href="favicon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header><img src="icon.png" alt="Logo VERDICT."><a href="./">VERDICT<span>.</span></a></header>
+  <h1 id="t">Connexion TikTok</h1>
+  <p id="msg">Lecture de la réponse de TikTok…</p>
+  <div class="box" id="box" hidden><span id="code" class="code"></span></div>
+  <p><button id="copy" hidden>Copier le code</button></p>
+  <p class="mut" id="hint" hidden>Ce code expire au bout de quelques minutes. Envoie-le tout de suite dans la conversation avec Claude, qui finira la connexion.</p>
+</main>
+<script>
+  const q = new URLSearchParams(location.search);
+  const code = q.get('code'), err = q.get('error'), desc = q.get('error_description');
+  const msg = document.getElementById('msg');
+  if (code) {
+    document.getElementById('t').textContent = 'Autorisation reçue ✔';
+    msg.textContent = 'Voici ton code d’autorisation :';
+    document.getElementById('code').textContent = code;
+    ['box', 'copy', 'hint'].forEach(id => document.getElementById(id).hidden = false);
+    document.getElementById('copy').onclick = () => {
+      navigator.clipboard.writeText(code).then(() => { document.getElementById('copy').textContent = 'Copié ✔'; }, () => {});
+    };
+  } else if (err) {
+    document.getElementById('t').textContent = 'Autorisation refusée';
+    msg.textContent = 'TikTok a renvoyé : ' + err + (desc ? ' — ' + desc : '');
+  } else {
+    msg.textContent = 'Aucun code reçu. Lance la connexion depuis le lien fourni par Claude.';
+  }
+</script>
+</body>
+</html>
